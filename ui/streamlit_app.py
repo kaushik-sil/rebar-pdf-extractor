@@ -20,18 +20,25 @@ DEMO_PASSWORD = os.environ.get("DEMO_PASSWORD", "demo123")
 
 
 def header_card(title: str, value: str, status: str) -> str:
-    color = "#d1f7dd" if status == "Complete" else "#fff3cd"
-    icon = "✅" if status == "Complete" else "⏳"
-    return f"""
-<div style='padding:20px;border-radius:18px;background:{color};box-shadow:0 8px 24px rgba(0,0,0,0.08);'>
-  <div style='display:flex;justify-content:space-between;align-items:center;'>
-    <div>
-      <h4 style='margin:0'>{title}</h4>
-      <p style='margin:0;font-size:22px;font-weight:700'>{value}</p>
+        # Polished card with softer palette and status badge
+        status_colors = {
+                "Complete": ("#e6fff0", "#16a34a", "✅"),
+                "In Progress": ("#fff8e6", "#d97706", "⏳"),
+                "Skipped": ("#f3f4f6", "#6b7280", "⛔"),
+        }
+        bg, accent, icon = status_colors.get(status, ("#f3f4f6", "#6b7280", ""))
+        return f"""
+<div style='padding:18px;border-radius:14px;background:{bg};box-shadow:0 6px 18px rgba(15,23,42,0.06);border:1px solid rgba(15,23,42,0.03);'>
+    <div style='display:flex;justify-content:space-between;align-items:center;'>
+        <div style='max-width:78%'>
+            <div style='font-size:15px;font-weight:700;color:#0f172a;margin-bottom:6px'>{title}</div>
+            <div style='font-size:20px;font-weight:800;color:#04263a'>{value}</div>
+        </div>
+        <div style='text-align:right'>
+            <div style='display:inline-block;padding:8px;border-radius:10px;background:{accent};color:white;font-weight:700'>{icon}</div>
+        </div>
     </div>
-    <div style='font-size:24px'>{icon}</div>
-  </div>
-  <div style='color:#3d3d3d;font-size:14px;margin-top:10px'>{status}</div>
+    <div style='color:#334155;font-size:13px;margin-top:12px'>{status}</div>
 </div>
 """
 
@@ -69,9 +76,15 @@ def show_pipeline_summary(result: dict[str, object]) -> None:
         ("CSV export", "Ready", "Complete"),
     ]
 
-    cols = st.columns(3)
+    # Two-row layout for better visual balance
+    first_row = st.columns([1, 1, 1])
+    second_row = st.columns([1, 1, 1])
+    cols = first_row + second_row
     for idx, (title, value, status) in enumerate(status_rows):
-        cols[idx % 3].markdown(header_card(title, value, status), unsafe_allow_html=True)
+        cols[idx].markdown(header_card(title, value, status), unsafe_allow_html=True)
+
+    # small spacer
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
 
 def safe_rerun() -> None:
