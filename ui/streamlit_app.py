@@ -7,6 +7,13 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
+import sys
+
+# Ensure project root is on sys.path so `src` package can be imported when
+# running Streamlit from other working directories.
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
 from src.pipeline import run_extraction_pipeline
 
 DEMO_PASSWORD = os.environ.get("DEMO_PASSWORD", "demo123")
