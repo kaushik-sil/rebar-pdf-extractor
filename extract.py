@@ -14,15 +14,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from src.export_csv import write_csv
-from src.ocr import ocr_image, tesseract_available
-from src.parser import ExtractedItem, parse_text
-from src.pdf_reader import extract_pages
+from src.pipeline import run_extraction_pipeline
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_PDF = ROOT / "input" / "sample_plan.pdf"
 DEFAULT_OUT = ROOT / "output" / "extracted.csv"
-WORK_DIR = ROOT / "output" / "_work"
 
 
 def run(pdf_path: Path, output_csv: Path, use_ocr: bool) -> int:
@@ -32,31 +28,18 @@ def run(pdf_path: Path, output_csv: Path, use_ocr: bool) -> int:
         return 1
 
     print(f"Reading: {pdf_path}")
-    pages = extract_pages(pdf_path, WORK_DIR / "pages")
-    ocr_ok = use_ocr and tesseract_available()
-    if use_ocr and not ocr_ok:
-        print("Note: Tesseract not found — using PDF text layer only.")
-        print("  Install: https://github.com/tesseract-ocr/tesseract")
+    result = run_extraction_pipeline(pdf_path, output_csv, use_ocr=use_ocr)
+    if not result["success"]:
+        for warning in result.get("warnings", []):
+            print(f"Warning: {warning}", file=sys.stderr)
+        return 1
 
-    all_items: list[ExtractedItem] = []
+    for warning in result.get("warnings", []):
+        print(f"Warning: {warning}")
 
-    for page in pages:
-        combined = page.text_layer
-        sources = ["pdf_text"]
-
-        if ocr_ok and page.image_path:
-            ocr_text = ocr_image(page.image_path)
-            if ocr_text:
-                combined = f"{combined}\n{ocr_text}".strip()
-                sources.append("ocr")
-
-        source_label = "+".join(sources)
-        items = parse_text(combined, page.page_number, source_label)
-        all_items.extend(items)
-        print(f"  Page {page.page_number}: {len(items)} items ({source_label})")
-
-    write_csv(all_items, output_csv)
-    print(f"\nWrote {len(all_items)} rows -> {output_csv}")
+    print(f"\nPages processed: {result['page_count']}")
+    print(f"Rows extracted: {result['rows']}")
+    print(f"Wrote {result['rows']} rows -> {output_csv}")
     return 0
 
 
