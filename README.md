@@ -1,61 +1,78 @@
-# Document Reader — Mini POC
+# Rebar PDF Extractor
 
-Small proof-of-concept for **PDF plan parsing**: text extraction, OCR, regex-based parsing, and **CSV export**.
+AI-powered PDF extraction system for structural rebar plans using Python, OCR, and computer vision.
 
-Built for freelance proposals (structural drawings, rebar callouts, dimensions, spacing).
+## What this repo contains
 
-## What it does
+- `extract.py` – CLI prototype for PDF → text/OCR → parsed items → CSV
+- `src/` – extraction modules for PDF, OCR, parsing, and CSV export
+- `scripts/create_sample_pdf.py` – generates a demo structural-style PDF
+- `input/sample_plan.pdf` – included sample PDF
+- `output/` – target folder for extracted CSV output
+- `backend/` – starter FastAPI backend for future API integration
 
-| Step | Tool |
-|------|------|
-| PDF text layer | `pdfplumber` |
-| Page images | `PyMuPDF` (fitz) |
-| OCR (scanned pages) | Tesseract + OpenCV preprocessing |
-| Parsing | Regex: rebar `#4`, spacing `@ 12"`, dimensions `12'-6"` |
-| Output | `output/extracted.csv` |
+## Features
+
+- PDF text layer extraction with `PyMuPDF`
+- OCR fallback via Tesseract for scanned pages
+- Regex-based parsing for rebar callouts, dimensions, and spacing
+- CSV export for extraction results
+- Starter FastAPI backend for API-driven extraction
+
+## Tech stack
+
+- Python
+- PyMuPDF
+- pdfplumber
+- Tesseract / OpenCV
+- pandas
+- FastAPI
+- uvicorn
+
+## Current status
+
+Prototype in progress:
+
+- PDF text extraction working
+- OCR fallback supported
+- Sample CSV export available
+- Backend starter app included as a next step
 
 ## Quick start
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate          # Windows
+.venv\Scripts\activate
 pip install -r requirements.txt
-
-# Optional: install Tesseract for OCR
-# https://github.com/UB-Mannheim/tesseract/wiki
-
 python scripts/create_sample_pdf.py
 python extract.py
 ```
 
-Use your own PDF:
+## CLI usage
 
 ```bash
 python extract.py path/to/your_plan.pdf -o output/my_plan.csv
+python extract.py --no-ocr
 ```
 
-## Sample output (CSV)
+## Backend starter
 
-| page | category | value | source | context |
-|------|----------|-------|--------|---------|
-| 1 | rebar | #5 @ 12" | pdf_text | ... #5 @ 12" o.c. ... |
-| 1 | dimension | 24'-0" | pdf_text | Overall: 24'-0" x 18'-6" |
-| 1 | symbol | W12x26 | pdf_text | B1: W12x26 |
+Run the API with:
 
-## Architecture (scalable next steps)
-
-```
-PDF → [text layer + page raster] → OCR merge → parser → CSV/Excel
-                              ↓
-                    (future: CV templates, GPT-4V, PaddleOCR)
+```bash
+uvicorn backend.app:app --reload
 ```
 
-## Screenshots for Upwork
+## Architecture
 
-1. `input/sample_plan.pdf` (or your client sample)
-2. Terminal running `python extract.py`
-3. `output/extracted.csv` opened in Excel
+```
+PDF → [text layer + page raster] → OCR merge → parser → CSV export
+             ↓
+      FastAPI backend / future UI
+```
 
-## Stack
+## Notes
 
-Python · pdfplumber · PyMuPDF · Tesseract · OpenCV · pandas
+- `input/sample_plan.pdf` is the included demo file.
+- `output/extracted.csv` is ignored by git.
+- Add your own project PDFs under `input/` or `sample_pdfs/`.
