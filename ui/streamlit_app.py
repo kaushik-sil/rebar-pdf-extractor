@@ -159,8 +159,26 @@ def main() -> None:
                 pdf_path = temp_dir / pdf_file.name
                 with open(pdf_path, "wb") as handle:
                     handle.write(pdf_file.getbuffer())
-                result = run_extraction_pipeline(pdf_path, Path(output_path), use_ocr=use_ocr)
-                render_result(result)
+
+                # Run pipeline with spinner and robust error capture
+                try:
+                    with st.spinner("Running extraction..."):
+                        result = run_extraction_pipeline(pdf_path, Path(output_path), use_ocr=use_ocr)
+                    render_result(result)
+                except Exception as exc:  # capture unexpected exceptions
+                    import traceback
+
+                    tb = traceback.format_exc()
+                    log_dir = Path("output")
+                    log_dir.mkdir(parents=True, exist_ok=True)
+                    log_file = log_dir / "ui_error.log"
+                    with open(log_file, "a", encoding="utf-8") as f:
+                        f.write("\n---\n")
+                        f.write(tb)
+
+                    st.error("Extraction failed with an unexpected error. See log below.")
+                    st.code(tb)
+                    st.write(f"Log written to: {log_file}")
 
     with tabs[2]:
         st.subheader("Sample files")
