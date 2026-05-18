@@ -38,6 +38,16 @@ Prototype in progress:
 - Sample CSV export available
 - Backend starter app included as a next step
 
+## Public demo scope
+
+This repository is a public proof-of-concept and portfolio demo, not a finished production pipeline. It shows:
+
+- starter PDF extraction workflow
+- OCR integration
+- basic parsing and export
+
+Advanced production logic, optimized extraction rules, and client-specific pipelines are kept private.
+
 ## Quick start
 
 ```bash
