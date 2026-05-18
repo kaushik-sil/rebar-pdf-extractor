@@ -44,7 +44,7 @@ def authenticate() -> bool:
     if st.session_state.authenticated:
         if st.sidebar.button("Logout"):
             st.session_state.authenticated = False
-            st.experimental_rerun()
+            safe_rerun()
         st.sidebar.success("Authenticated")
         return True
 
@@ -52,7 +52,7 @@ def authenticate() -> bool:
     if st.sidebar.button("Login"):
         if password == DEMO_PASSWORD:
             st.session_state.authenticated = True
-            st.experimental_rerun()
+            safe_rerun()
         else:
             st.sidebar.error("Invalid password. Try demo123.")
     st.sidebar.info("Demo password: demo123")
@@ -72,6 +72,23 @@ def show_pipeline_summary(result: dict[str, object]) -> None:
     cols = st.columns(3)
     for idx, (title, value, status) in enumerate(status_rows):
         cols[idx % 3].markdown(header_card(title, value, status), unsafe_allow_html=True)
+
+
+def safe_rerun() -> None:
+    """Attempt to rerun the Streamlit script; fall back to stopping the script if rerun API is unavailable."""
+    rerun = getattr(st, "experimental_rerun", None)
+    if callable(rerun):
+        try:
+            rerun()
+            return
+        except Exception:
+            pass
+    # Last-resort fallback: stop execution so Streamlit will re-run on next interaction
+    try:
+        st.stop()
+    except Exception:
+        # If even st.stop is unavailable, do nothing
+        return
 
 
 def render_result(result: dict[str, object]) -> None:
