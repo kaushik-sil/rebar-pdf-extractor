@@ -9,7 +9,7 @@ AI-powered PDF extraction system for structural rebar plans using Python, OCR, a
 - `scripts/create_sample_pdf.py` – generates a demo structural-style PDF
 - `input/sample_plan.pdf` – included sample PDF
 - `output/` – target folder for extracted CSV output
-- `backend/` – starter FastAPI backend for future API integration
+- `ui/` – Streamlit demo UI for pipeline visualization and extraction
 
 ## Features
 
@@ -17,7 +17,7 @@ AI-powered PDF extraction system for structural rebar plans using Python, OCR, a
 - OCR fallback via Tesseract for scanned pages
 - Regex-based parsing for rebar callouts, dimensions, and spacing
 - CSV export for extraction results
-- Starter FastAPI backend for API-driven extraction
+- Demo UI for pipeline status and extraction
 
 ## Tech stack
 
@@ -26,8 +26,8 @@ AI-powered PDF extraction system for structural rebar plans using Python, OCR, a
 - pdfplumber
 - Tesseract / OpenCV
 - pandas
-- FastAPI
-- uvicorn
+- Streamlit
+- numpy
 
 ## Current status
 
@@ -36,7 +36,7 @@ Prototype in progress:
 - PDF text extraction working
 - OCR fallback supported
 - Sample CSV export available
-- Basic demo extraction workflow included
+- Streamlit UI demo added with pipeline status and authentication
 
 ## Public demo scope
 
@@ -65,12 +65,12 @@ python extract.py path/to/your_plan.pdf -o output/my_plan.csv
 python extract.py --no-ocr
 ```
 
-## Backend starter
+## UI demo
 
-Run the API with:
+Run the demo UI with:
 
 ```bash
-uvicorn backend.app:app --reload
+streamlit run ui/streamlit_app.py
 ```
 
 ## Architecture
