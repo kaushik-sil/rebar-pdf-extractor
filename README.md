@@ -36,15 +36,15 @@ Prototype in progress:
 - PDF text extraction working
 - OCR fallback supported
 - Sample CSV export available
-- Backend starter app included as a next step
+- Basic demo extraction workflow included
 
 ## Public demo scope
 
-This repository is a public proof-of-concept and portfolio demo, not a finished production pipeline. It shows:
+This repository is a public proof-of-concept and portfolio demo, not a production-ready delivery. It shows:
 
 - starter PDF extraction workflow
 - OCR integration
-- basic parsing and export
+- basic parsing and CSV export
 
 Advanced production logic, optimized extraction rules, and client-specific pipelines are kept private.
 
