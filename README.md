@@ -10,6 +10,7 @@ AI-powered PDF extraction system for structural rebar plans using Python, OCR, a
 - `input/sample_plan.pdf` – included sample PDF
 - `output/` – target folder for extracted CSV output
 - `ui/` – Streamlit demo UI for pipeline visualization and extraction
+- `images/` – demo screenshots for the app and extraction flow
 
 ## Features
 
@@ -72,6 +73,17 @@ Run the demo UI with:
 ```bash
 streamlit run ui/streamlit_app.py
 ```
+
+## Screenshots
+
+### Demo UI dashboard
+![Demo UI dashboard](images/dashboard.png)
+
+### Extraction flow
+![Extraction upload and pipeline](images/extractiohn_page.png)
+
+### Extraction results preview
+![Extraction results preview](images/extraction_result.png)
 
 ## Architecture
 
